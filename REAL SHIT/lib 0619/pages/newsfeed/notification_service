@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:gismultiinstancetestingenvironment/pages/inbox/inbox_model.dart';
+
+class NotificationService {
+  final List<NotifyBroadcast> notifications = [];
+
+  void subscribeToNotifications(Function(NotifyBroadcast) onNewNotification) {
+    // Simulate receiving notifications (Replace this with actual implementation)
+    Future.delayed(Duration(seconds: 3), () {
+      final newNotification =
+          NotifyBroadcast(title: "New Alert", description: "Flood Warning!");
+      notifications.insert(0, newNotification);
+      onNewNotification(newNotification);
+    });
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void showNotificationList(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Notifications"),
+        content: Container(
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            children: notifications
+                .map((notification) => ListTile(
+                      title: Text(notification.title),
+                      subtitle: Text(notification.description),
+                    ))
+                .toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: Text("Close")),
+        ],
+      ),
+    );
+  }
+}
